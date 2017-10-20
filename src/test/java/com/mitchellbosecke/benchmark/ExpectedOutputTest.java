@@ -1,21 +1,18 @@
 package com.mitchellbosecke.benchmark;
 
-import static org.junit.Assert.assertEquals;
+import com.mitchellbosecke.pebble.error.PebbleException;
+import freemarker.template.TemplateException;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Locale;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import com.mitchellbosecke.pebble.error.PebbleException;
-
-import freemarker.template.TemplateException;
+import static org.junit.Assert.assertEquals;
 
 /**
- *
  * @author Martin Kouba
  */
 public class ExpectedOutputTest {
@@ -31,12 +28,26 @@ public class ExpectedOutputTest {
         freemarker.setup();
         assertOutput(freemarker.benchmark());
     }
-    
+
     @Test
     public void testRockerOutput() throws IOException, TemplateException {
         Rocker rocker = new Rocker();
         rocker.setup();
         assertOutput(rocker.benchmark());
+    }
+
+    @Test
+    public void testTemporizeOutput() throws IOException, TemplateException {
+        TemporizeToString temporizeToString = new TemporizeToString();
+        temporizeToString.setup();
+        assertOutput(temporizeToString.benchmark());
+    }
+
+    @Test
+    public void testTemporizeWriterOutput() throws IOException, TemplateException {
+        TemporizeWriter temporize = new TemporizeWriter();
+        temporize.setup();
+        assertOutput(temporize.benchmark());
     }
 
     @Test
@@ -88,10 +99,10 @@ public class ExpectedOutputTest {
     private String readExpectedOutputResource() throws IOException {
         StringBuilder builder = new StringBuilder();
         try (BufferedReader in = new BufferedReader(new InputStreamReader(ExpectedOutputTest.class.getResourceAsStream("/expected-output.html")))) {
-            for (;;) {
+            for (; ; ) {
                 String line = in.readLine();
                 if (line == null) {
-                  break;
+                    break;
                 }
                 builder.append(line);
             }
